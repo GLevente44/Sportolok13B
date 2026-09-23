@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MySqlConnector;
+using Sportolok13B.Models;
 
 namespace Sportolok13B.Controllers
 {
@@ -7,6 +9,38 @@ namespace Sportolok13B.Controllers
     [ApiController]
     public class EredmenyController : ControllerBase
     {
+        private readonly string ConnectionString = "server=localhost;database=sportolo13b;uid=root;password=";
+
+        [HttpGet]
+        public List<Eredmeny> GetAllEredmeny()
+        {
+            List<Eredmeny> eredmenyek = new List<Eredmeny>();
+
+            var connector = new MySqlConnection(ConnectionString);
+            connector.Open();
+
+            string sql = "SELECT * FROM eredmeny;";
+            var cmd = new MySqlCommand(sql, connector);
+            var dataReader = cmd.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                var eredmeny = new Eredmeny
+                {
+                    Id = dataReader.GetInt32(0),
+                    Competition = dataReader.GetString(1),
+                    Description = dataReader.GetString(2),
+                    ResultTime = dataReader.GetDateTime(3),
+                    UpdateTime = dataReader.GetDateTime(4),
+                    SportoloId = dataReader.GetInt32(5),
+                };
+                eredmenyek.Add(eredmeny);
+            }
+
+
+            connector.Close();
+            return eredmenyek;
+        }
 
     }
 }
