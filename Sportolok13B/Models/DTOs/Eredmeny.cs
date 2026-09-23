@@ -1,4 +1,4 @@
-﻿namespace Sportolok13B.Models
+﻿namespace Sportolok13B.Models.DTOs
 {
     public class Eredmeny
     {

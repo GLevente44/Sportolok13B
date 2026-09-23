@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
-using Sportolok13B.Models;
+using Sportolok13B.Models.DTOs;
 
 namespace Sportolok13B.Controllers
 {
@@ -142,6 +142,8 @@ namespace Sportolok13B.Controllers
 
             return new { message = "Sikeres törlés" };
         }
+
+
 
 
 
