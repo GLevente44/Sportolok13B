@@ -42,5 +42,26 @@ namespace Sportolok13B.Controllers
             return eredmenyek;
         }
 
+        [HttpGet("byId")]
+        public object GetEredmenyById(int id)
+        {
+            var connector = new MySqlConnection(ConnectionString);
+            connector.Open();
+
+            var sql = "SELECT `Competition` FROM `eredmeny` WHERE `Id` = @id;";
+            var cmd = new MySqlCommand(sql, connector);
+            cmd.Parameters.AddWithValue("@id", id);
+            var datareader = cmd.ExecuteReader();
+            datareader.Read();
+
+            var eredmeny = new
+            {
+                Competition = datareader.GetString(0)
+            };
+
+            connector.Close();
+            return eredmeny;
+        }
+
     }
 }
