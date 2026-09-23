@@ -125,6 +125,24 @@ namespace Sportolok13B.Controllers
             return new { message = "Sikeres frissítés.", result = updatedEredmeny };
         }
 
+        [HttpDelete]
+        public object DeleteEredmeny(int id)
+        {
+            var connector = new MySqlConnection(ConnectionString);
+            connector.Open();
+
+            var sql = $"DELETE FROM `eredmeny` WHERE id = @id";
+            var cmd = new MySqlCommand(sql, connector);
+            cmd.Parameters.AddWithValue("id", id);
+
+            cmd.ExecuteNonQuery();
+
+            connector.Close();
+
+
+            return new { message = "Sikeres törlés" };
+        }
+
 
 
     }
