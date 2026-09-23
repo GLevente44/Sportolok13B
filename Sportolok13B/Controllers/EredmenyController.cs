@@ -92,5 +92,40 @@ namespace Sportolok13B.Controllers
             return e;
         }
 
+        [HttpPut]
+        public object UpdateEredmeny([FromQuery] int id, [FromBody] Eredmeny updateEredmeny)
+        {
+            var connector = new MySqlConnection(ConnectionString);
+
+            connector.Open();
+
+            string sql = @"UPDATE `eredmeny` SET `competition`=@competition,`description`=@description,`resulttime`=@resulttime,`updatetime`=@updatetime 
+                WHERE `id`= @id;";
+
+            var cmd = new MySqlCommand(sql, connector);
+
+            cmd.Parameters.AddWithValue("@competition", updateEredmeny.Competition);
+            cmd.Parameters.AddWithValue("@description", updateEredmeny.Description);
+            cmd.Parameters.AddWithValue("@resulttime", updateEredmeny.ResultTime);
+            cmd.Parameters.AddWithValue("@updatetime", updateEredmeny.UpdateTime);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            cmd.ExecuteNonQuery();
+
+            var updatedEredmeny = new Eredmeny
+            {
+                Competition = updateEredmeny.Competition,
+                Description = updateEredmeny.Description,
+                ResultTime = updateEredmeny.ResultTime,
+                UpdateTime = updateEredmeny.UpdateTime
+            };
+
+            connector.Close();
+
+            return new { message = "Sikeres frissítés.", result = updatedEredmeny };
+        }
+
+
+
     }
 }
