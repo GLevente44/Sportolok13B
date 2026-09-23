@@ -1,6 +1,6 @@
 ﻿namespace Sportolok13B.Models.DTOs
 {
-    public class EredmenyGet
+    public class Sportolo
     {
         public int Id { get; set; }
         public string? Name { get; set; }
