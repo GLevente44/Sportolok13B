@@ -63,5 +63,34 @@ namespace Sportolok13B.Controllers
             return eredmeny;
         }
 
+        [HttpPost]
+        public object AddNewEredmeny(Eredmeny eredmeny)
+        {
+            var connector = new MySqlConnection(ConnectionString);
+            connector.Open();
+
+            var e = new Eredmeny
+            {
+                Competition = eredmeny.Competition,
+                Description = eredmeny.Description,
+                ResultTime = DateTime.Now,
+                UpdateTime = DateTime.Now,
+                SportoloId = eredmeny.SportoloId
+            };
+
+            var sql = $"INSERT INTO `eredmeny`(`Competition`, `Description`, `ResultTime`, `UpdateTime`, `SportoloId`) VALUES (@competition,@description,@resulttime,@updatetime,@sportoloid)";
+
+            var cmd = new MySqlCommand(sql, connector);
+            cmd.Parameters.AddWithValue("@title", e.Competition);
+            cmd.Parameters.AddWithValue("@content", e.Description);
+            cmd.Parameters.AddWithValue("@posttime", e.ResultTime);
+            cmd.Parameters.AddWithValue("@updatetime", e.UpdateTime);
+            cmd.Parameters.AddWithValue("blogid", e.SportoloId);
+
+            cmd.ExecuteNonQuery();
+            connector.Close();
+            return e;
+        }
+
     }
 }
