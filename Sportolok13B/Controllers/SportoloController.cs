@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
 using Sportolok13B.Models.DTOs;
+using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Sportolok13B.Controllers
@@ -57,7 +58,7 @@ namespace Sportolok13B.Controllers
 
             var eredmeny = new
             {
-                Competition = datareader.GetString(0)
+                Name = datareader.GetString(0),
             };
 
             connector.Close();
@@ -144,6 +145,102 @@ namespace Sportolok13B.Controllers
 
             return new { message = "Sikeres törlés" };
         }
+
+        // 6. Feladat
+
+        [HttpGet("NameandEmail")]
+        public List<object> nameAndEmail(int id)
+        {
+            List<object> bynameandemail = new List<object>();
+            var connector = new MySqlConnection(ConnectionString);
+            connector.Open();
+
+            var sql = "SELECT Name, Email FROM `sportolo` WHERE sportolo.`id` = @id";
+            var cmd = new MySqlCommand(sql, connector);
+            cmd.Parameters.AddWithValue("@id", id);
+            var datareader = cmd.ExecuteReader();
+            while (datareader.Read())
+            {
+                var sportoloNamesAndEmail = new
+                {
+                    Name = datareader.GetString(0),
+                    Email = datareader.GetString(1)
+                };
+
+                bynameandemail.Add(sportoloNamesAndEmail);
+
+            }
+
+
+            connector.Close();
+            return bynameandemail;
+        }
+
+        // 7. Feladat
+        [HttpGet("byName")]
+        public List<object> GetSportoloByName(int id)
+        {
+            List<object> byname= new List<object>();
+            var connector = new MySqlConnection(ConnectionString);
+            connector.Open();
+
+            var sql = "SELECT sportolo.Name, eredmeny.Competition, eredmeny.Description FROM `sportolo` INNER JOIN eredmeny ON name.id = eredmeny.SportoloId WHERE sportolo.`id` = @id";
+            var cmd = new MySqlCommand(sql, connector);
+            cmd.Parameters.AddWithValue("@id", id);
+            var datareader = cmd.ExecuteReader();
+            while (datareader.Read())
+            {
+                var sportoloNames = new
+                {
+                    Name = datareader.GetString(0),
+                    Competition= datareader.GetString(1),
+                    Description = datareader.GetString(2)
+                };
+
+                byname.Add(sportoloNames);
+
+            }
+
+            connector.Close();
+            return byname;
+        }
+
+        // 8. Feladat
+
+        [HttpGet("eredmenydb")]
+        public List<Eredmeny> GetEredmenyDb()
+        {
+            List<Eredmeny> eredmenyekdb = new List<Eredmeny>();
+
+            var connector = new MySqlConnection(ConnectionString);
+            connector.Open();
+
+            string sql = "SELECT COUNT(*) FROM eredmeny;";
+            var cmd = new MySqlCommand(sql, connector);
+            var dataReader = cmd.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                var eredmenydb = new Eredmeny
+                {
+                    Id = dataReader.GetInt32(0),
+                    Competition = dataReader.GetString(1),
+                    Description = dataReader.GetString(2),
+                    ResultTime = dataReader.GetDateTime(3),
+                    UpdateTime = dataReader.GetDateTime(4),
+                    SportoloId = dataReader.GetInt32(5),
+                };
+                eredmenyekdb.Add(eredmenydb);
+            }
+
+
+            connector.Close();
+            return eredmenyekdb;
+        }
+
+        // 9. Feladat
+
+        // Nincs olyan tábla hogy hány eredmény van
 
 
 
